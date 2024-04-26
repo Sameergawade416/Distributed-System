@@ -1,0 +1,123 @@
+Name:-Sameer Sitaram Gawade
+Roll No:-508
+Practical:-DS(RMI)
+
+//*************************************************************************************//
+Add.java
+//************************************************************************************//
+
+import java.rmi.*;
+
+public interface Add extends Remote{
+	public int perimeterOfRectangle(int l, int b) throws RemoteException;
+	
+}
+
+
+//************************************************************************************//
+AddImpl.java
+//************************************************************************************//
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class AddImpl extends UnicastRemoteObject implements Add {
+	AddImpl() throws RemoteException{
+	super();
+	}
+	public int perimeterOfRectangle(int l, int b){
+	return ((l+b)*2) ;
+	}
+	
+	
+}
+//*************************************************************************************//
+Server.java
+//************************************************************************************//
+import java.rmi.*;
+import java.rmi.registry.*;
+
+public class Server{
+	public static void main(String args[]){
+		try{
+			Add obj=new AddImpl();
+			Naming.rebind("rmi://localhost/MAYUR",obj);
+			
+			System.out.println("Server Started");
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+			
+	}
+}
+
+
+//**************************************************************************************//
+Client.java
+//*************************************************************************************//
+
+import java.rmi.*;
+
+public class Client extends Thread{
+	public  void run(){
+	
+
+		try{
+			Add obj=(Add)Naming.lookup("rmi://localhost/MAYUR");
+			System.out.println(Thread.currentThread().getName()+" Perimeter Of Rectangle is: "+obj.perimeterOfRectangle(10,20));
+			
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+	}
+	
+	public static void main(String args[]){
+		
+	Client c=new Client();
+	c.setName("Thread 1");
+	c.start();
+	
+	
+		
+		
+	}
+}
+
+
+
+//*****************************************************************************************//
+
+OUTPUT:-
+1st Terminal
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ javac *.java
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ rmic rmiRemote
+Warning: generation and use of skeletons and static stubs for JRMP	
+is deprecated. Skeletons are unnecessary, and static stubs have	
+been superseded by dynamically generated stubs. Users are	
+encouraged to migrate away from using rmic to generate skeletons and static	
+stubs. See the documentation for java.rmi.server.UnicastRemoteObject.
+error: Class rmiRemote not found.
+1 error
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ rmiregistry
+
+
+2nd Terminal
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ javac Server.java
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ java Server
+Server Started
+
+3rd Terminal
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ javac Client.java
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ java Client
+Thread-1 Addition is: 15
+Thread 2 Addition is: 15
+Thread 2 Subtraction is: -2
+Thread-1 Subtraction is: -2
+Thread 2 Muiltiplication is: 240
+Thread-1 Muiltiplication is: 240
+Thread-1 Division is: 1
+Thread 2 Division is: 1
+it@it-HP-EliteDesk-800-G2-SFF:~/Desktop/Sameer$ 
+
